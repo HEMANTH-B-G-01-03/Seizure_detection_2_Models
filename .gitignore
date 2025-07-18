@@ -1,0 +1,3 @@
+*.npy
+ANN/*.h5
+LSTM/*.h5
