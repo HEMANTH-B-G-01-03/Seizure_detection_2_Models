@@ -84,3 +84,18 @@ plt.title("Training Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("True")
 plt.show()
+
+
+# Predictions and Confusion Matrix for Validation Data
+y_val_pred_probs = model.predict(X_val)
+y_val_pred = (y_val_pred_probs > 0.5).astype(int).flatten()
+conf_matrix_val = confusion_matrix(y_val, y_val_pred)
+print("\nValidation Confusion Matrix:")
+print(conf_matrix_val)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(conf_matrix_val, annot=True, fmt='d', cmap='Blues', xticklabels=["No Seizure", "Seizure"], yticklabels=["No Seizure", "Seizure"])
+plt.title("Validation Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.show()
