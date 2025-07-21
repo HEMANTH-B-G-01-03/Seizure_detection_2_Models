@@ -56,3 +56,28 @@ def generate_eeg_signal(seizure=False):
     
     return signal.flatten()  # Flatten multi-channel data
 
+
+
+
+
+# Generate seizure and non-seizure signals
+for _ in range(n_seizure):
+    data.append(generate_eeg_signal(seizure=True))
+    labels.append(1)  # Seizure label
+
+for _ in range(n_non_seizure):
+    data.append(generate_eeg_signal(seizure=False))
+    labels.append(0)  # Non-seizure label
+
+# Convert to NumPy arrays
+data = np.array(data)
+labels = np.array(labels)
+
+# Shuffle the data and labels
+indices = np.arange(n_samples)
+np.random.shuffle(indices)
+data = data[indices]
+labels = labels[indices]
+
+# Visualization: Display 5 random seizure and non-seizure signals
+plt.figure(figsize=(15, 10))
