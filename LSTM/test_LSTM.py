@@ -134,3 +134,20 @@ model = load_model('epileptic_seizure_detection_lstm_model.h5')
 y_pred_probs = model.predict(data_pca)
 y_pred = (y_pred_probs > 0.5).astype(int).flatten()
 
+# Confusion matrix
+conf_matrix = confusion_matrix(labels, y_pred)
+print("\nConfusion Matrix:")
+print(conf_matrix)
+
+# Classification report
+print("\nClassification Report:")
+print(classification_report(labels, y_pred))
+
+# Plot confusion matrix
+plt.figure(figsize=(6, 4))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues',
+            xticklabels=["No Seizure", "Seizure"], yticklabels=["No Seizure", "Seizure"])
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.show()
