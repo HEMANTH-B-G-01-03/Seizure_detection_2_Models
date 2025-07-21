@@ -19,3 +19,32 @@ def generate_seizure_wave(duration, sampling_rate):
     wave = amplitude * np.sin(2 * np.pi * freq * t) + noise
     return t, wave
 
+# Parameters
+duration = 2  # seconds
+sampling_rate = 250  # Hz (sampling rate typical for EEG data)
+
+# Generate normal and seizure waves
+t_normal, normal_wave = generate_normal_wave(duration, sampling_rate)
+t_seizure, seizure_wave = generate_seizure_wave(duration, sampling_rate)
+
+# Plotting the waves
+plt.figure(figsize=(10, 6))
+
+# Plot normal wave
+plt.subplot(2, 1, 1)
+plt.plot(t_normal, normal_wave, label="Non-Seizure Wave", color="blue")
+plt.title("Non-Seizure EEG Wave")
+plt.xlabel("Time (seconds)")
+plt.ylabel("Amplitude (µV)")
+plt.legend()
+
+# Plot seizure wave
+plt.subplot(2, 1, 2)
+plt.plot(t_seizure, seizure_wave, label="Seizure Wave", color="red")
+plt.title("Seizure EEG Wave")
+plt.xlabel("Time (seconds)")
+plt.ylabel("Amplitude (µV)")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
