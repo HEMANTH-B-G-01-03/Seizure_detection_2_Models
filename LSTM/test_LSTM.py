@@ -81,3 +81,56 @@ labels = labels[indices]
 
 # Visualization: Display 5 random seizure and non-seizure signals
 plt.figure(figsize=(15, 10))
+
+
+# Parameters for visualization
+segment_length = 256  # Plot only the first second
+amplitude_scaling = 10  # Scale to microvolt range
+
+# Get random indices for seizure and non-seizure signals
+seizure_indices = np.random.choice(np.where(labels == 1)[0], size=5, replace=False)
+non_seizure_indices = np.random.choice(np.where(labels == 0)[0], size=5, replace=False)
+
+# Plot random seizure signals
+for i, idx in enumerate(seizure_indices):
+    plt.subplot(5, 2, 2 * i + 1)
+    signal_segment = data[idx][:segment_length] * amplitude_scaling
+    plt.plot(signal_segment, label=f"Seizure Signal {i + 1}", color="red")
+    plt.title(f"Random Seizure EEG Signal {i + 1}")
+    plt.xlabel("Time (ms)")
+    plt.ylabel("Amplitude (µV)")
+    plt.legend()
+    plt.ylim([-100, 100])
+
+# Plot random non-seizure signals
+for i, idx in enumerate(non_seizure_indices):
+    plt.subplot(5, 2, 2 * i + 2)
+    signal_segment = data[idx][:segment_length] * amplitude_scaling
+    plt.plot(signal_segment, label=f"Non-Seizure Signal {i + 1}", color="blue")
+    plt.title(f"Random Non-Seizure EEG Signal {i + 1}")
+    plt.xlabel("Time (ms)")
+    plt.ylabel("Amplitude (µV)")
+    plt.legend()
+    plt.ylim([-100, 100])
+
+plt.tight_layout()
+plt.show()
+
+# Dimensionality reduction (PCA)
+pca = PCA(n_components=45)
+data_pca = pca.fit_transform(data)
+
+# Reshape for LSTM model (3D input: samples, timesteps, features)
+data_pca = data_pca.reshape(data_pca.shape[0], data_pca.shape[1], 1)
+
+# Normalize the data
+data_pca = (data_pca - data_pca.mean(axis=0)) / data_pca.std(axis=0)
+data_pca = np.nan_to_num(data_pca)  # Handle NaN or infinity values
+
+# Load the trained LSTM model
+model = load_model('epileptic_seizure_detection_lstm_model.h5')
+
+# Predict on the dataset
+y_pred_probs = model.predict(data_pca)
+y_pred = (y_pred_probs > 0.5).astype(int).flatten()
+
