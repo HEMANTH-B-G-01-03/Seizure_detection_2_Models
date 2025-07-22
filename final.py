@@ -113,3 +113,11 @@ def real_time_seizure_detection(region=None):
 
     # Close the OpenCV windows when done
     cv2.destroyAllWindows()
+
+
+# Define the screen region to capture (if full screen, set to None)
+# Example: (x, y, width, height) or None for full screen capture
+screen_region = None  # Capture the full screen for Spike Recorder
+
+if __name__ == '__main__':
+    real_time_seizure_detection(screen_region)
