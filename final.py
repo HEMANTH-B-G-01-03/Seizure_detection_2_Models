@@ -57,3 +57,59 @@ def predict_seizure(eeg_data):
     processed_data = np.expand_dims(processed_data, axis=0)  # Add batch dimension
     prediction = model.predict(processed_data)
     return prediction[0]  # Return the prediction
+
+
+
+# Function to plot the waveform data
+def plot_waveform(waveform_data, seizure_status):
+    """
+    Plot the waveform data and display seizure status on the image.
+    """
+    plt.figure(figsize=(6, 3))
+    plt.plot(waveform_data, label='Waveform Data', color='blue')
+    plt.title(f'Seizure Status: {"Seizure Detected" if seizure_status == 1 else "No Seizure"}')
+    plt.xlabel('Time')
+    plt.ylabel('Amplitude')
+    plt.legend(loc='upper right')
+    plt.grid(True)
+    
+    # Save the plot as an image
+    plt.savefig('waveform_status.png', bbox_inches='tight')
+    plt.close()
+
+# Real-time loop to capture screen, process, and predict
+def real_time_seizure_detection(region=None):
+    while True:
+        # Step 1: Capture the full screen (or the selected region where the waveform is)
+        screen_image = capture_screen(region)
+
+        # Step 2: Extract waveform data from the image
+        eeg_data = extract_waveform_data(screen_image)
+
+        # Step 3: Predict seizure status based on the EEG data
+        seizure_status = predict_seizure(eeg_data)
+
+        # Step 4: Display seizure status and waveform
+        plot_waveform(eeg_data, seizure_status)
+
+        # Load the saved plot to display it in an OpenCV window
+        waveform_image = cv2.imread('waveform_status.png')
+
+        # Step 5: Display the seizure status and waveform
+        if seizure_status == 1:
+            print("Seizure Detected!")
+        else:
+            print("No Seizure")
+        
+        # Display the captured screen image and the waveform plot
+        cv2.imshow("Full Screen Display", screen_image)
+        cv2.imshow("Waveform Display", waveform_image)
+
+        # Check if the user presses 'q' to quit the display window
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        time.sleep(1)  # Adjust based on screen refresh rate
+
+    # Close the OpenCV windows when done
+    cv2.destroyAllWindows()
